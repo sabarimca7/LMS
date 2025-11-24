@@ -5,15 +5,15 @@ VisualStudioVersion = 17.14.36511.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LMS.Api", "PayingGuest.Api\LMS.Api.csproj", "{307F78BC-4928-4495-B40C-FC9AF31D0409}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LMS.Api", "LMS.Api\LMS.Api.csproj", "{307F78BC-4928-4495-B40C-FC9AF31D0409}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LMS.Application", "PayingGuest.Application\LMS.Application.csproj", "{BF758318-4590-4BAA-8492-AE61F21EB0B0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LMS.Application", "LMS.Application\LMS.Application.csproj", "{BF758318-4590-4BAA-8492-AE61F21EB0B0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LMS.Common", "PayingGuest.Common\LMS.Common.csproj", "{2599FD53-4A86-4FD4-8FB4-06E3991944AA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LMS.Common", "LMS.Common\LMS.Common.csproj", "{2599FD53-4A86-4FD4-8FB4-06E3991944AA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LMS.Domain", "PayingGuest.Domain\LMS.Domain.csproj", "{54EFCEA8-6F3F-425E-8775-484183DD1FBA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LMS.Domain", "LMS.Domain\LMS.Domain.csproj", "{54EFCEA8-6F3F-425E-8775-484183DD1FBA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LMS.Infrastructure", "PayingGuest.Infrastructure\LMS.Infrastructure.csproj", "{D62C6432-0DF4-4F54-92BF-0B4FBBC17CBA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LMS.Infrastructure", "LMS.Infrastructure\LMS.Infrastructure.csproj", "{D62C6432-0DF4-4F54-92BF-0B4FBBC17CBA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
