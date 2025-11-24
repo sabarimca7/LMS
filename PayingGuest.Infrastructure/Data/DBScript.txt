@@ -1,0 +1,161 @@
+USE [LMS]
+GO
+CREATE SCHEMA [LM]
+GO
+
+CREATE TABLE [LM].[ClientToken](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[ClientId] [nvarchar](300) NOT NULL,
+	[AccessToken] [nvarchar](max) NOT NULL,
+	[TokenType] [nvarchar](50) NOT NULL,
+	[ExpiresAt] [datetime2](7) NOT NULL,
+	[RefreshToken] [nvarchar](max) NULL,
+	[Scope] [nvarchar](500) NULL,
+	[CreatedDate] [datetime2](7) NOT NULL,
+	[LastUsedDate] [datetime2](7) NULL,
+	[IsActive] [bit] NOT NULL,
+)
+
+CREATE TABLE [LM].[Menu](
+	[MenuId] [int] IDENTITY(1,1) NOT NULL,
+	[MenuName] [nvarchar](100) NOT NULL,
+	[MenuTitle] [nvarchar](100) NOT NULL,
+	[MenuUrl] [nvarchar](500) NULL,
+	[MenuIcon] [nvarchar](100) NULL,
+	[ParentMenuId] [int] NULL,
+	[DisplayOrder] [int] NOT NULL,
+	[IsActive] [bit] NOT NULL,
+	[CreatedDate] [datetime2](7) NOT NULL,
+)
+
+CREATE TABLE [LM].[Role](
+	[RoleId] [int] IDENTITY(1,1) NOT NULL,
+	[RoleName] [nvarchar](100) NOT NULL,
+	[Description] [nvarchar](500) NULL,
+	[IsActive] [bit] NOT NULL,
+	[CreatedDate] [datetime2](7) NOT NULL,
+	[CreatedBy] [nvarchar](100) NULL
+	)
+
+
+CREATE TABLE [LM].[RoleMenuPermission](
+	[RoleMenuPermissionId] [int] IDENTITY(1,1) NOT NULL,
+	[RoleId] [int] NOT NULL,
+	[MenuId] [int] NOT NULL,
+	[CanView] [bit] NOT NULL,
+	[CanCreate] [bit] NOT NULL,
+	[CanEdit] [bit] NOT NULL,
+	[CanDelete] [bit] NOT NULL,
+	[IsActive] [bit] NOT NULL,
+	[CreatedDate] [datetime2](7) NOT NULL,
+	[CreatedBy] [nvarchar](100) NULL,
+	[LastModifiedDate] [datetime2](7) NULL,
+	[LastModifiedBy] [nvarchar](100) NULL
+	)
+ 
+
+CREATE TABLE [LM].[User](
+    [UserId] INT IDENTITY(1,1) PRIMARY KEY,
+    [UserName] NVARCHAR(150) NOT NULL,
+    [Email] NVARCHAR(200) NOT NULL UNIQUE,
+    [PasswordHash] NVARCHAR(500) NOT NULL,
+    [FullName] NVARCHAR(200) NULL,
+    [IsActive] BIT NOT NULL DEFAULT 1
+);
+
+
+CREATE TABLE [LM].[UserRole](
+	[UserRoleId] [int] IDENTITY(1,1) NOT NULL,
+	[UserId] [int] NOT NULL,
+	[RoleId] [int] NOT NULL,
+	[IsActive] [bit] NOT NULL,
+	[CreatedDate] [datetime2](7) NOT NULL,
+	[CreatedBy] [nvarchar](100) NULL
+	)
+
+CREATE TABLE [LM].[UserToken](
+	[UserTokenId] [int] IDENTITY(1,1) NOT NULL,
+	[UserId] [int] NOT NULL,
+	[AccessToken] [nvarchar](max) NOT NULL,
+	[RefreshToken] [nvarchar](max) NULL,
+	[TokenType] [nvarchar](50) NOT NULL,
+	[ExpiresAt] [datetime2](7) NOT NULL,
+	[RefreshTokenExpiresAt] [datetime2](7) NULL,
+	[IsRevoked] [bit] NOT NULL,
+	[RevokedAt] [datetime2](7) NULL,
+	[RevokedByIp] [nvarchar](50) NULL,
+	[ReplacedByToken] [nvarchar](max) NULL,
+	[CreatedAt] [datetime2](7) NOT NULL,
+	[CreatedByIp] [nvarchar](50) NULL,
+	[DeviceInfo] [nvarchar](500) NULL,
+	[IsActive] [bit] NOT NULL
+	)
+ 
+
+CREATE TABLE [LM].[Course](
+    [CourseId] INT IDENTITY(1,1) PRIMARY KEY,
+    [CourseCode] NVARCHAR(50) NOT NULL UNIQUE,
+    [Title] NVARCHAR(200) NOT NULL,
+    [Description] NVARCHAR(MAX) NULL,
+    [Category] NVARCHAR(100) NULL,
+    [Level] NVARCHAR(50) NULL,
+    [IsPublished] BIT NOT NULL DEFAULT 0,
+    [CreatedBy] INT NOT NULL,
+    [CreatedDate] DATETIME NOT NULL DEFAULT GETDATE(),
+    [UpdatedDate] DATETIME NULL,
+    FOREIGN KEY(CreatedBy) REFERENCES [LM].[User](UserId)
+);
+
+CREATE TABLE [LM].[CourseModule](
+    [ModuleId] INT IDENTITY(1,1) PRIMARY KEY,
+    [CourseId] INT NOT NULL,
+    [Title] NVARCHAR(200) NOT NULL,
+    [DisplayOrder] INT NOT NULL DEFAULT 1,
+    FOREIGN KEY(CourseId) REFERENCES [LM].[Course](CourseId)
+);
+
+
+CREATE TABLE [LM].[Lesson](
+    [LessonId] INT IDENTITY(1,1) PRIMARY KEY,
+    [ModuleId] INT NOT NULL,
+    [Title] NVARCHAR(200) NOT NULL,
+    [TextContent] NVARCHAR(MAX) NULL,   -- notes / legal text
+    [DisplayOrder] INT NOT NULL DEFAULT 1,
+    FOREIGN KEY(ModuleId) REFERENCES [LM].[CourseModule](ModuleId)
+);
+
+CREATE TABLE [LM].[MediaAsset](
+    [MediaId] INT IDENTITY(1,1) PRIMARY KEY,
+    [LessonId] INT NOT NULL,
+    [FileName] NVARCHAR(300) NOT NULL,
+    [ContentType] NVARCHAR(100) NOT NULL,
+    [FileSizeBytes] BIGINT NULL,
+    [StoragePath] NVARCHAR(500) NOT NULL,   -- blob path / file path
+    [UploadedDate] DATETIME NOT NULL DEFAULT GETDATE(),
+    FOREIGN KEY(LessonId) REFERENCES [LM].[Lesson](LessonId)
+);
+
+CREATE TABLE [LM].[Enrollment](
+    [EnrollmentId] INT IDENTITY(1,1) PRIMARY KEY,
+    [UserId] INT NOT NULL,
+    [CourseId] INT NOT NULL,
+    [StartDate] DATETIME NOT NULL DEFAULT GETDATE(),
+    [EndDate] DATETIME NULL,  
+    [IsActive] BIT NOT NULL DEFAULT 1,
+    FOREIGN KEY(UserId) REFERENCES [LM].[User](UserId),
+    FOREIGN KEY(CourseId) REFERENCES [LM].[Course](CourseId)
+);
+
+CREATE TABLE [LM].[AuditLog](
+	[AuditId] [int] IDENTITY(1,1) NOT NULL,
+	[TableName] [nvarchar](100) NOT NULL,
+	[RecordId] [int] NOT NULL,
+	[Action] [nvarchar](20) NOT NULL,
+	[OldValues] [nvarchar](max) NULL,
+	[NewValues] [nvarchar](max) NULL,
+	[UserId] [int] NULL,
+	[UserName] [nvarchar](100) NULL,
+	[IpAddress] [nvarchar](45) NULL,
+	[UserAgent] [nvarchar](500) NULL,
+	[CreatedDate] [datetime2](7) NOT NULL,
+)

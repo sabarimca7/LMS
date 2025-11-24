@@ -1,0 +1,24 @@
+﻿using LMS.Domain.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace LMS.Domain.Interfaces
+{
+    public interface IUnitOfWork : IDisposable
+    {
+        IUserRepository Users { get; }
+        IRepository<Property> Properties { get; }
+        IRepository<AuditLog> AuditLogs { get; }
+        IRepository<ClientToken> ClientTokens { get; }
+        IMenuRepository Menus { get; }
+        IUserRoleRepository UserRoles { get; }
+        IUserTokenRepository UserTokens { get; }
+        Task<int> SaveChangesAsync();
+        Task BeginTransactionAsync();
+        Task CommitTransactionAsync();
+        Task RollbackTransactionAsync();
+    }
+}
