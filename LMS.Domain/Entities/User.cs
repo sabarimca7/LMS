@@ -29,4 +29,5 @@ public class User : BaseEntity
     public int? IdentityServerUserId { get; set; }
     public Property? Property { get; set; } = null!;
     public ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
+    public ICollection<Enrollment> Enrollments { get; set; } = new List<Enrollment>();
 }

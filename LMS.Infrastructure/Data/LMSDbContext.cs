@@ -18,6 +18,12 @@ namespace LMS.Infrastructure.Data
         public DbSet<Menu> Menus { get; set; }
         public DbSet<RoleMenuPermission> RoleMenuPermissions { get; set; }
 
+        public DbSet<Course> Courses => Set<Course>();
+        public DbSet<CourseModule> CourseModules => Set<CourseModule>();
+        public DbSet<Lesson> Lessons => Set<Lesson>();
+        public DbSet<MediaAsset> MediaAssets => Set<MediaAsset>();
+        public DbSet<Enrollment> Enrollments => Set<Enrollment>();
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -186,6 +192,44 @@ namespace LMS.Infrastructure.Data
                       .HasForeignKey(e => e.MenuId)
                       .HasConstraintName("FK_RoleMenuPermission_Menu");
             });
+
+            // Course
+            modelBuilder.Entity<Course>()
+                .Property(c => c.CourseCode)
+                .HasMaxLength(50);
+
+            modelBuilder.Entity<Course>()
+                .HasIndex(c => c.CourseCode)
+                .IsUnique();
+
+            // Module
+            modelBuilder.Entity<CourseModule>()
+                .HasOne(m => m.Course)
+                .WithMany(c => c.Modules)
+                .HasForeignKey(m => m.CourseId);
+
+            // Lesson
+            modelBuilder.Entity<Lesson>()
+                .HasOne(l => l.Module)
+                .WithMany(m => m.Lessons)
+                .HasForeignKey(l => l.ModuleId);
+
+            // Media
+            modelBuilder.Entity<MediaAsset>()
+                .HasOne(ma => ma.Lesson)
+                .WithMany(l => l.MediaAssets)
+                .HasForeignKey(ma => ma.LessonId);
+
+            // Enrollment
+            modelBuilder.Entity<Enrollment>()
+                .HasOne(e => e.User)
+                .WithMany(u => u.Enrollments)
+                .HasForeignKey(e => e.UserId);
+
+            modelBuilder.Entity<Enrollment>()
+                .HasOne(e => e.Course)
+                .WithMany(c => c.Enrollments)
+                .HasForeignKey(e => e.CourseId);
 
         }
     }
